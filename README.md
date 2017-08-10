@@ -56,13 +56,13 @@
 ### Configure the Local Timezone to UTC
 
 ### Install and configure Apache to serve a Python mod_wsgi application.
-    * sudo apt-get install apache2
-    * sudo apt-get install libapache2-mod-wsgi
-    * sudo nano /etc/apache2/sites-enabled/000-default.conf (per Udacity instructions)
-    * Right before closing tag of <VirtualHost *:80> added the following line: WSGIScriptAlias / /var/www/html/myapp.wsgi
-    * ctrl+X, Y, Enter, back on command line enter 'sudo apache2ctl restart'
-    * sudo nano /var/www/html/myapp.wsgi
-    * Placed the code found here [link]https://classroom.udacity.com/nanodegrees/nd004/parts/ab002e9a-b26c-43a4-8460-dc4c4b11c379/modules/357367901175461/lessons/4340119836/concepts/48018692630923 for testing
+    1. sudo apt-get install apache2
+    2. sudo apt-get install libapache2-mod-wsgi
+    3. sudo nano /etc/apache2/sites-enabled/000-default.conf (per Udacity instructions)
+    4. Right before closing tag of <VirtualHost *:80> added the following line: WSGIScriptAlias / /var/www/html/myapp.wsgi
+    5. ctrl+X, Y, Enter, back on command line enter 'sudo apache2ctl restart'
+    6. sudo nano /var/www/html/myapp.wsgi
+    7. Placed the code found here [link]https://classroom.udacity.com/nanodegrees/nd004/parts/ab002e9a-b26c-43a4-8460-dc4c4b11c379/modules/357367901175461/lessons/4340119836/concepts/48018692630923 for testing
     *
 
 
