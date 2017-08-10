@@ -56,6 +56,7 @@
 ### Configure the Local Timezone to UTC
 
 ### Install and configure Apache to serve a Python mod_wsgi application.
+*
     1. sudo apt-get install apache2
     2. sudo apt-get install libapache2-mod-wsgi
     3. sudo nano /etc/apache2/sites-enabled/000-default.conf (per Udacity instructions)
