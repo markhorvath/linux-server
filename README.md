@@ -9,16 +9,16 @@
     *Go to instance page and click "Connect using SSH" to open terminal
 
 ### Set up firewall
-* In AWS SSH Terminal
-    * sudo apt-get update && sudo apt-get upgrade
-    * sudo ufw allow 2200/tcp
-    * sudo ufw allow 80/tcp
-    * sudo ufw allow 123/udp
-    * sudo nano /etc/ssh/sshd_config, add ‘Port 2200’ below ‘Port 22’ for now
-    * sudo ufw default allow outgoing
-    * sudo ufw default deny incoming
-    * sudo ufw allow ssh
-    * sudo ufw enable
+##### In AWS SSH Terminal
+* sudo apt-get update && sudo apt-get upgrade
+* sudo ufw allow 2200/tcp
+* sudo ufw allow 80/tcp
+* sudo ufw allow 123/udp
+* sudo nano /etc/ssh/sshd_config, add ‘Port 2200’ below ‘Port 22’ for now
+* sudo ufw default allow outgoing
+* sudo ufw default deny incoming
+* sudo ufw allow ssh
+* sudo ufw enable
 
 ### Set up user 'grader' and give grader sudo access
     * sudo apt-get install finger
@@ -30,7 +30,7 @@
     * Back on the main Lightsail Instance page click on the 'Account page' link toward the bottom
     * Click on the "SSH Keys" tab and download the default private key
 
-* In a separate, local terminal shell
+##### In a separate, local terminal shell
     * ls -ltr /Users/username/Downloads/LightsailDefaultPrivateKey-us-east-1.pem (this was to check the file permissions)
     * cp /Users/username/Downloads/LightsailDefaultPrivateKey-us-east-1.pem ~/.ssh/ (this is just copying the default key and moving it to /.ssh)
     * chmod 600 ~/.ssh/LightsailDefaultPrivateKey-us-east-1.pem (change the permissions)
@@ -38,7 +38,7 @@
     * sudo login grader (switch to user grader)
 
 ### Set up new keypair
-* Open a new terminal on local machine
+##### Open a new terminal on local machine
     * ssh-keygen (this creates a new keypair, place it in ~/.ssh/ and name it)
     * ls -ltr ~/.ssh/ (just to make sure it's there)
     * ssh -i ~/.ssh/LightsailDefaultPrivateKey-us-east-1.pem ubuntu@34.227.31.137 -p 2200 (test ssh into -p 2200)
@@ -56,15 +56,14 @@
 ### Configure the Local Timezone to UTC
 
 ### Install and configure Apache to serve a Python mod_wsgi application.
+* sudo apt-get install apache2
+* sudo apt-get install libapache2-mod-wsgi
+* sudo nano /etc/apache2/sites-enabled/000-default.conf (per Udacity instructions)
+* Right before closing tag of <VirtualHost *:80> added the following line: WSGIScriptAlias / /var/www/html/myapp.wsgi
+* ctrl+X, Y, Enter, back on command line enter 'sudo apache2ctl restart'
+* sudo nano /var/www/html/myapp.wsgi
+* Placed the code found here [link](https://classroom.udacity.com/nanodegrees/nd004/parts/ab002e9a-b26c-43a4-8460-dc4c4b11c379/modules/357367901175461/lessons/4340119836/concepts/48018692630923) for testing
 *
-    * sudo apt-get install apache2
-    * sudo apt-get install libapache2-mod-wsgi
-    * sudo nano /etc/apache2/sites-enabled/000-default.conf (per Udacity instructions)
-    * Right before closing tag of <VirtualHost *:80> added the following line: WSGIScriptAlias / /var/www/html/myapp.wsgi
-    * ctrl+X, Y, Enter, back on command line enter 'sudo apache2ctl restart'
-    * sudo nano /var/www/html/myapp.wsgi
-    * Placed the code found here [link](https://classroom.udacity.com/nanodegrees/nd004/parts/ab002e9a-b26c-43a4-8460-dc4c4b11c379/modules/357367901175461/lessons/4340119836/concepts/48018692630923) for testing
-    *
 
 
 
