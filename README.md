@@ -21,21 +21,21 @@
 * sudo ufw enable
 
 ### Set up user 'grader' and give grader sudo access
-    * sudo apt-get install finger
-    * sudo adduser grader
-    * sudo cp /etc/sudoers.d/90-cloud-init-users /etc/sudoers.d/grader
-    * sudo nano /etc/sudoers.d/
-    * added grader ALL=(ALL) NOPASSWD:ALL to /etc/sudoers.d/
-    * chmod 700 .ssh
-    * Back on the main Lightsail Instance page click on the 'Account page' link toward the bottom
-    * Click on the "SSH Keys" tab and download the default private key
+* sudo apt-get install finger
+* sudo adduser grader
+* sudo cp /etc/sudoers.d/90-cloud-init-users /etc/sudoers.d/grader
+* sudo nano /etc/sudoers.d/
+* added grader ALL=(ALL) NOPASSWD:ALL to /etc/sudoers.d/
+* chmod 700 .ssh
+* Back on the main Lightsail Instance page click on the 'Account page' link toward the bottom
+* Click on the "SSH Keys" tab and download the default private key
 
 ##### In a separate, local terminal shell
-    * ls -ltr /Users/username/Downloads/LightsailDefaultPrivateKey-us-east-1.pem (this was to check the file permissions)
-    * cp /Users/username/Downloads/LightsailDefaultPrivateKey-us-east-1.pem ~/.ssh/ (this is just copying the default key and moving it to /.ssh)
-    * chmod 600 ~/.ssh/LightsailDefaultPrivateKey-us-east-1.pem (change the permissions)
-    * ssh -i ~/.ssh/LightsailDefaultPrivateKey-us-east-1.pem ubuntu@34.227.31.137 -p 22 (check to make sure I can ssh into the server as ubuntu)
-    * sudo login grader (switch to user grader)
+* ls -ltr /Users/username/Downloads/LightsailDefaultPrivateKey-us-east-1.pem (this was to check the file permissions)
+* cp /Users/username/Downloads/LightsailDefaultPrivateKey-us-east-1.pem ~/.ssh/ (this is just copying the default key and moving it to /.ssh)
+* chmod 600 ~/.ssh/LightsailDefaultPrivateKey-us-east-1.pem (change the permissions)
+* ssh -i ~/.ssh/LightsailDefaultPrivateKey-us-east-1.pem ubuntu@34.227.31.137 -p 22 (check to make sure I can ssh into the server as ubuntu)
+* sudo login grader (switch to user grader)
 
 ### Set up new keypair
 ##### Open a new terminal on local machine
