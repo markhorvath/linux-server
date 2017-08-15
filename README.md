@@ -76,9 +76,9 @@
 * sudo nano __init__.py
 * enter the code found [here on Digital Ocean]{https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps) then ctrl-X, Y, Enter
 * sudo virtualenv venv
-* . venv/bin/activate
+* . venv/bin/activate (the '.' is the same as 'source', but source wasn't available in my shell)
 * Inside venv, run 'sudo pip install Flask'
-* Tried running 'sudo python __init__.py' but "No such file or directory", ls confirms this
+* Tried running 'sudo python __init__.py' but "No such file or direc
 
 
 ### Install and configure PostgreSQL
