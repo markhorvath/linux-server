@@ -83,8 +83,59 @@
 
 ### Install and configure PostgreSQL
 * sudo apt-get install postgresql
-* su -i -u postgres
-* createuser --pwprompt
+* sudo -i -u postgres
+* sudo -u postgres psql
+* sudo -u postgres createuser -P catalog
+* Enter password twice
+* sudo -u postgres createdb -O catalog catalog (the first catalog is the user, 2nd is the db name)
 
+### Install Git
+* sudo apt-get install git
+
+### Deploy the Item Catalog Project
+* cd var/www/
+* sudo apt-get install python-sqlalchemy
+* sudo git clone https://github.com/markhorvath/songcatalog.git
+* cd songcatalog, cd vagrant, cd catalog
+* sudo nano songsdb_setup.py
+* go to bottom, change create_engine to 'postgresql://catalog:catalog@localhost/catalog', ctrl-X, Y, Enter
+* sudo -H pip install psycopg2
+* sudo python songsdb_setup.py
+* sudo nano songpopulator.py
+* change create_engine to 'postgresql://catalog:catalog@localhost/catalog', ctrl-X, Y, Enter
+* sudo python songpopulator.py (should notify when finished)
+* sudo -H pip install Flask
+* in songcatalog, sudo nano .htaccess, add "RedirectMatch 404 /\.git", save & exit
+* sudo nano __init__.py
+* Add the following:
+```
+from flask import Flask
+app = Flask(__name__)
+@app.route("/")
+def hello():
+    return "Hello"
+if __name__ == "__main__":
+    app.run()
+```
+* sudo nano /etc/apache2/sites-available/songcatalog.conf
+```
+<VirtualHost *:80>
+                ServerName 34.227.31.137
+                ServerAdmin admin@34.227.31.137
+                WSGIScriptAlias / /var/www/FlaskApp/songcatalog.wsgi
+                <Directory /var/www/FlaskApp/FlaskApp/>
+                        Order allow,deny
+                        Allow from all
+                </Directory>
+                Alias /static /var/www/FlaskApp/FlaskApp/static
+                <Directory /var/www/FlaskApp/FlaskApp/static/>
+                        Order allow,deny
+                        Allow from all
+                </Directory>
+                ErrorLog ${APACHE_LOG_DIR}/error.log
+                LogLevel warn
+                CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
 
 
