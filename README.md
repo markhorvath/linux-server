@@ -51,7 +51,8 @@
 * chmod 644 .ssh/authorized_keys
 * test ssh as 'grader': ssh –i ~/.ssh/lightsail-grader grader@34.227.31.137 -p 2200
 * did the same steps for user 'ubuntu' as a precaution, not sure if necessary
-* sudo nano /etc/ssh/sshd_config to delete Port 22 from ports to listen to (this didn’t disable ssh’ing into the server when I tested it, probly because port 22 is still open on the lightsail networking tab
+* sudo nano /etc/ssh/sshd_config to delete Port 22 from ports to listen to
+* On Amazon Lightsail Networking page, under "Firewall" section click "Edit rules" and delete port 22
 
 ### Configure the Local Timezone to UTC
 * 'date' was already showing UTC but entered the following command anyway according to this [link](https://askubuntu.com/questions/138423/how-do-i-change-my-timezone-to-utc-gmt)
