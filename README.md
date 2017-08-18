@@ -123,13 +123,13 @@ if __name__ == "__main__":
 <VirtualHost *:80>
                 ServerName 34.227.31.137
                 ServerAdmin admin@34.227.31.137
-                WSGIScriptAlias / /var/www/FlaskApp/songcatalog.wsgi
-                <Directory /var/www/FlaskApp/FlaskApp/>
+                WSGIScriptAlias / /var/www/Catalog/songcatalog.wsgi
+                <Directory /var/www/Catalog/Catalog/>
                         Order allow,deny
                         Allow from all
                 </Directory>
-                Alias /static /var/www/FlaskApp/FlaskApp/static
-                <Directory /var/www/FlaskApp/FlaskApp/static/>
+                Alias /static /var/www/Catalog/Catalog/static
+                <Directory /var/www/Catalog/Catalog/static/>
                         Order allow,deny
                         Allow from all
                 </Directory>
@@ -138,5 +138,25 @@ if __name__ == "__main__":
                 CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 ```
+* sudo a2ensite songcatalog returned this:
+    *Enabling site songcatalog.
+    *To activate the new configuration, you need to run:
+    *service apache2 reload
+* attempted running service apache2 reload, but it asked for a password i was unaware of
+##### Create the .wsgi file
+* cd /var/www/Catalog
+* sudo nano songcatalog.wsgi and add this code:
+```
+#!/usr/bin/python
+import sys
+import logging
+logging.basicConfig(stream=sys.stderr)
+sys.path.insert(0,"/var/www/Catalog/")
+
+from Catalog import app as application
+application.secret_key = 'super_secret_key'
+```
+* sudo service apache2 restart
+
 
 
