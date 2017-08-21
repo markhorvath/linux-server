@@ -79,7 +79,6 @@
 * sudo virtualenv venv
 * . venv/bin/activate (the '.' is the same as 'source', but source wasn't available in my shell)
 * Inside venv, run 'sudo pip install Flask'
-* Tried running 'sudo python __init__.py' but "No such file or direc
 
 
 ### Install and configure PostgreSQL
@@ -157,6 +156,9 @@ from Catalog import app as application
 application.secret_key = 'super_secret_key'
 ```
 * sudo service apache2 restart
+##### Install Dependencies
+* . venv/bin/activate
+* sudo pip install httplib2 requests Flask-SQLAlchemy sqlalchemy oauth2client
 
 
 
