@@ -4,161 +4,134 @@
 * Public IP address: 34.227.31.137
 
 # Steps Taken (In Order)
-###Setup AWS account and Lightsail Server according to Udacity [link](https://classroom.udacity.com/nanodegrees/nd004/parts/ab002e9a-b26c-43a4-8460-dc4c4b11c379/modules/357367901175462/lessons/3573679011239847/concepts/ce268cfe-99ec-49be-9326-876375f89a22)
+###1. Start a new Ubuntu Linux server instance on Amazon Lightsail. [link](https://classroom.udacity.com/nanodegrees/nd004/parts/ab002e9a-b26c-43a4-8460-dc4c4b11c379/modules/357367901175462/lessons/3573679011239847/concepts/ce268cfe-99ec-49be-9326-876375f89a22)
     *Add custom TCP 2200 port on Amazon Lightsaild Networking tab
     *Go to instance page and click "Connect using SSH" to open terminal
 
-### Set up firewall
-##### In AWS SSH Terminal
-* sudo apt-get update && sudo apt-get upgrade
-* sudo ufw allow 2200/tcp
-* sudo ufw allow 80/tcp
-* sudo ufw allow 123/udp
-* sudo nano /etc/ssh/sshd_config, add ‘Port 2200’ below ‘Port 22’ for now
-* sudo ufw default allow outgoing
-* sudo ufw default deny incoming
-* sudo ufw allow ssh
-* sudo ufw enable
+###2. Connect SSH
 
-### Set up user 'grader' and give grader sudo access
-* sudo apt-get install finger
-* sudo adduser grader
-* sudo cp /etc/sudoers.d/90-cloud-init-users /etc/sudoers.d/grader
-* sudo nano /etc/sudoers.d/
-* added grader ALL=(ALL) NOPASSWD:ALL to /etc/sudoers.d/
-* chmod 700 .ssh
-* Back on the main Lightsail Instance page click on the 'Account page' link toward the bottom
-* Click on the "SSH Keys" tab and download the default private key
+###3. Update all currently installed packages
+* `sudo apt-get install finger`
+* `sudo apt-get update` then `sudo apt-get upgrade`
 
-##### In a separate, local terminal shell
-* ls -ltr /Users/username/Downloads/LightsailDefaultPrivateKey-us-east-1.pem (this was to check the file permissions)
-* cp /Users/username/Downloads/LightsailDefaultPrivateKey-us-east-1.pem ~/.ssh/ (this is just copying the default key and moving it to /.ssh)
-* chmod 600 ~/.ssh/LightsailDefaultPrivateKey-us-east-1.pem (change the permissions)
-* ssh -i ~/.ssh/LightsailDefaultPrivateKey-us-east-1.pem ubuntu@34.227.31.137 -p 22 (check to make sure I can ssh into the server as ubuntu)
-* sudo login grader (switch to user grader)
 
-### Set up new keypair
-##### Open a new terminal on local machine
-* ssh-keygen (this creates a new keypair, place it in ~/.ssh/ and name it)
-* ls -ltr ~/.ssh/ (just to make sure it's there)
-* ssh -i ~/.ssh/LightsailDefaultPrivateKey-us-east-1.pem ubuntu@34.227.31.137 -p 2200 (test ssh into -p 2200)
-* In the ssh terminal, enter 'sudo service ssh restart'
-* Back in 'grader', enter mkdir .ssh
-* touch .ssh/authorized_keys (this makes the file)
-* in local terminal, enter 'cat ~/.ssh/lightsail-grader.pub' to read the file then copy contents
-* Back in grader, enter 'nano .ssh/authorized_keys' to open file, then paste contents of public key into file, hit ctrl-x, Y, enter
-* chmod 700 .ssh
-* chmod 644 .ssh/authorized_keys
-* test ssh as 'grader': ssh –i ~/.ssh/lightsail-grader grader@34.227.31.137 -p 2200
-* did the same steps for user 'ubuntu' as a precaution, not sure if necessary
-* sudo nano /etc/ssh/sshd_config to delete Port 22 from ports to listen to
-* On Amazon Lightsail Networking page, under "Firewall" section click "Edit rules" and delete port 22
+###4. Change the SSH port from 22 to 2200. Make sure to configure the Lightsail firewall to allow it.
+* In Networking tab, add Custom TCP port 2200
+* `sudo nano /etc/ssh/sshd_config` add ‘Port 2200’ below ‘Port 22’ for now
+* download default ssh key, then `cp Users/username/Downloads/lightsailkey.pem ~/.ssh/`
+* rename it as you see fit, eg grader-key
+* `chmod 600 grader-key`
+* `ssh -i ~/.ssh/grader-key ubuntu@54.83.148.219`
 
-### Configure the Local Timezone to UTC
+###5. Configure the Uncomplicated Firewall (UFW) for SSH (port 2200), HTTP (port 80), and NTP (port 123).
+* `sudo ufw allow 2200/tcp && sudo ufw allow 80/tcp && sudo ufw allow 123/udp`
+* `sudo ufw default allow outgoing`
+* `sudo ufw default deny incoming`
+* `sudo ufw allow ssh`
+* `sudo ufw enable`
+
+###6. Create a new user account named grader.
+* `sudo adduser grader` pw 'grader'
+
+###7. Give grader the permission to sudo.
+* Most of this part was based on this Digital Ocean [article](https://www.digitalocean.com/community/tutorials/how-to-edit-the-sudoers-file-on-ubuntu-and-centos)
+* `sudo visudo`
+* In #User privelege specification section add the line `grader ALL=(ALL:ALL) ALL` under the root line
+* `sudo visudo -f /etc/sudoers.d/grader` then add `grader ALL=(ALL:ALL) ALL`
+
+###8. Create an SSH key pair for grader using the ssh-keygen tool.
+* In separate terminal, navigate to /.ssh/ and enter `ssh-keygen`
+* Name the file, udacity-grader in this case
+* Back in ssh connection, enter `sudo login grader` to switch to user grader
+* `mkdir .ssh` then add file `touch /.ssh/authorized_keys`
+* copy contents of .ssh/udacity-grader.pub on local machine to /.ssh/authorized_keys, save and exit
+* set permissions via `chmod 700 .ssh && chmod 644 .ssh/authorized_keys`
+* Can now log in as grader `ssh -i ~/.ssh/udacity-grader grader@54.83.148.219 -p 2200`
+* Disable ssh into Port 22 with `sudo nano /etc/ssh/sshd_config' then delete 'Port 22'
+* While here also change root 'PermitRootLogin prohibit-password' to 'PermitRootLogin no'
+* `sudo service ssh reload`
+
+###9. Configure the local timezone to UTC
 * 'date' was already showing UTC but entered the following command anyway according to this [link](https://askubuntu.com/questions/138423/how-do-i-change-my-timezone-to-utc-gmt)
-* sudo dpkg-reconfigure tzdata
+* `sudo dpkg-reconfigure tzdata`
 * Enter, Enter, (aka select 'none of the above' and 'UTC')
 
-### Install and configure Apache to serve a Python mod_wsgi application.
-* sudo apt-get install apache2
-* sudo apt-get install libapache2-mod-wsgi
-* sudo a2enmod wsgi
-* sudo nano /etc/apache2/sites-enabled/000-default.conf (per Udacity instructions)
-* Right before closing tag of <VirtualHost *:80> added the following line: WSGIScriptAlias / /var/www/html/myapp.wsgi
-* ctrl+X, Y, Enter, back on command line enter 'sudo apache2ctl restart'
-* sudo nano /var/www/html/myapp.wsgi
-* Placed the code found here [link](https://classroom.udacity.com/nanodegrees/nd004/parts/ab002e9a-b26c-43a4-8460-dc4c4b11c379/modules/357367901175461/lessons/4340119836/concepts/48018692630923) for testing
-* sudo apt-get install python-pip
-* sudo pip install virtualenv
-* cd /var/www
-* sudo mkdir Catalog
-* cd into Catalog, the again ‘sudo mkdir MyApp’
-* cd into new Catalog, then ‘sudo mkdir static templates’
-* sudo nano __init__.py
-* enter the code found [here on Digital Ocean]{https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps) then ctrl-X, Y, Enter
-* sudo virtualenv venv
-* . venv/bin/activate (the '.' is the same as 'source', but source wasn't available in my shell)
-* Inside venv, run 'sudo pip install Flask'
-
-
-### Install and configure PostgreSQL
-* sudo apt-get install postgresql
-* sudo -i -u postgres
-* sudo -u postgres psql
-* sudo -u postgres createuser -P catalog
-* Enter password twice
-* sudo -u postgres createdb -O catalog catalog (the first catalog is the user, 2nd is the db name)
-
-### Install Git
-* sudo apt-get install git
-
-### Deploy the Item Catalog Project
-* cd var/www/
-* sudo apt-get install python-sqlalchemy
-* sudo git clone https://github.com/markhorvath/songcatalog.git
-* cd songcatalog, cd vagrant, cd catalog
-* sudo nano songsdb_setup.py
-* go to bottom, change create_engine to 'postgresql://catalog:catalog@localhost/catalog', ctrl-X, Y, Enter
-* sudo -H pip install psycopg2
-* sudo python songsdb_setup.py
-* sudo nano songpopulator.py
-* change create_engine to 'postgresql://catalog:catalog@localhost/catalog', ctrl-X, Y, Enter
-* sudo python songpopulator.py (should notify when finished)
-* sudo -H pip install Flask
-* in songcatalog, sudo nano .htaccess, add "RedirectMatch 404 /\.git", save & exit
-* sudo nano __init__.py
-* Add the following:
+###10. Install and configure Apache to serve a Python mod_wsgi application
+* Some of this was from this Digital Ocean [article](https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps#setup)
+* `sudo apt-get install apache2`
+* `sudo apt-get install libapache2-mod-wsgi python-dev`
+* `sudo a2enmod` to enable the mod_wsgi
+* Test to see it works `sudo service apache2 restart` then open a browser and go to your IP address
+* `cd /var/www/` then `sudo mkdir catalog`, cd into catalog then `sudo mkdir catalog` again
+* in /var/www/catalog, made a catalog.wsgi file with `sudo nano catalog.wsgi` with the following code:
 ```
-from flask import Flask
-app = Flask(__name__)
-@app.route("/")
-def hello():
-    return "Hello"
-if __name__ == "__main__":
-    app.run()
-```
-* sudo nano /etc/apache2/sites-available/songcatalog.conf
-```
-<VirtualHost *:80>
-                ServerName 34.227.31.137
-                ServerAdmin admin@34.227.31.137
-                WSGIScriptAlias / /var/www/Catalog/songcatalog.wsgi
-                <Directory /var/www/Catalog/Catalog/>
-                        Order allow,deny
-                        Allow from all
-                </Directory>
-                Alias /static /var/www/Catalog/Catalog/static
-                <Directory /var/www/Catalog/Catalog/static/>
-                        Order allow,deny
-                        Allow from all
-                </Directory>
-                ErrorLog ${APACHE_LOG_DIR}/error.log
-                LogLevel warn
-                CustomLog ${APACHE_LOG_DIR}/access.log combined
-</VirtualHost>
-```
-* sudo a2ensite songcatalog returned this:
-    *Enabling site songcatalog.
-    *To activate the new configuration, you need to run:
-    *service apache2 reload
-* attempted running service apache2 reload, but it asked for a password i was unaware of
-##### Create the .wsgi file
-* cd /var/www/Catalog
-* sudo nano songcatalog.wsgi and add this code:
-```
-#!/usr/bin/python
 import sys
 import logging
 logging.basicConfig(stream=sys.stderr)
-sys.path.insert(0,"/var/www/Catalog/")
+sys.path.insert(0, "/var/www/catalog/")
 
-from Catalog import app as application
-application.secret_key = 'super_secret_key'
+from catalog import app as application
 ```
-* sudo service apache2 restart
-##### Install Dependencies
-* . venv/bin/activate
-* sudo pip install httplib2 requests Flask-SQLAlchemy sqlalchemy oauth2client
+* Ctrl+X, Y, Enter
 
+###11. Install and configure PostgreSQL
+##### Do Not Allow Remote Connections
+* Most of this is from this DigitalOcean [article](https://www.digitalocean.com/community/tutorials/how-to-secure-postgresql-on-an-ubuntu-vps) and postgres documentation
+* `sudo apt-get install postgresql postgresql-contrib`
+* `sudo su - postgres`
+* `psql`
+* `CREATE USER catalog WITH PASSWORD 'catalog';` [documentation](https://www.postgresql.org/docs/8.0/static/sql-createuser.html)
+* `ALTER USER catalog CREATEDB;` [documentation](https://www.postgresql.org/docs/9.5/static/sql-alteruser.html)
+* verify with `\du`
+* `CREATE DATABASE catalog WITH OWNER catalog;`
+* `/c catalog` to connect to catalog db
+* `REVOKE ALL ON SCHEMA public FROM public;` [documentation](https://www.postgresql.org/docs/9.0/static/sql-revoke.html)
+* `GRANT ALL ON SCHEMA public TO catalog;`
+* `\q` to exit catalog db
+* exit psql
+* In all application files that reference `sqlite:///songs.db` from the previous project, replace with the following: `postgresql://catalog:catalog@localhost/catalog`
+* While the virtual environment is running, run songsdb_setup.py and then songpopulator.py.  Go into sequel and connect to catalog then `\dt` to confirm the tables were created.  Try some select statements
 
+##### Create a new database named catalog that has limited permissions to your catalog application database.
 
+###12. Install git.
+* `sudo apt-get install git`
+
+###13. Clone and setup your Item Catalog project from the Github repository you created earlier in this Nanodegree program.
+* `git clone https://github.com/markhorvath/songcatalog.git`
+* Have to tweak the directory structure by moving files up to /var/www/catalog/catalog/ with `mv * .[^.]* ..` and removing the vagrant directory and Vagrantfile with `rmdir` or `rm`
+
+###14. Set it up in your server so that it functions correctly when visiting your server’s IP address in a browser. Make sure that your .git directory is not publicly accessible via a browser!
+##### Install depencies and venv (much of this from Digital Ocean [Step 3](https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps#setup))
+* `sudo apt-get install python-pip`
+* `sudo pip install virtualenv`
+* In /var/www/catalog, `sudo virtualenv venv`
+* `source venv/bin/activate`
+* Change permissions `sudo chmod -R 777 venv`
+* 'sudo pip install Flask'
+* `pip install sqlalchemy oauth2client httplib2 request psycopg2`
+* `sudo nano /etc/apache2/sites-available/catalog.conf` and paste in the following code:
+```
+<VirtualHost *:80>
+    ServerName example.com
+    ServerAdmin admin@54.83.148.219
+    WSGIScriptAlias / /var/www/catalog/catalog.wsgi
+    <Directory /var/www/catalog/catalog/>
+        Order allow,deny
+        Allow from all
+    </Directory>
+    Alias /static /var/www/catalog/catalog/static
+    <Directory /var/www/catalog/catalog/static/>
+        Order allow,deny
+        Allow from all
+    </Directory>
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    LogLevel warn
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
+`sudo service apache2 reload`
+* Check sites enabled: `cd /etc/apache2/sites-available`
+* Check what sites are enabled: `ls -alh /etc/apache2/sites-available`
+* `sudo a2dissite 000-default.conf` to disable default
+* `sudo serve apache2 reload`
