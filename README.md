@@ -1,7 +1,8 @@
 # Linux Server Configuration Project
 
 ## To the Reviewer:
-* Public IP address: 34.227.31.137
+* Public IP address: 54.83.148.219
+* URL: http://ec2-54-83-148-219.us-west-2.compute.amazonaws.com
 
 # Steps Taken (In Order)
 ### Start a new Ubuntu Linux server instance on Amazon Lightsail. [link](https://classroom.udacity.com/nanodegrees/nd004/parts/ab002e9a-b26c-43a4-8460-dc4c4b11c379/modules/357367901175462/lessons/3573679011239847/concepts/ce268cfe-99ec-49be-9326-876375f89a22)
@@ -155,5 +156,6 @@ execfile(activate_this, dict(__file__=activate_this))` to top of .wsgi file
 * Click 'Edit' button for 'OAuth 2.0 client IDs'
 * Added 'http://ec2-54-83-148-219.us-west-2.compute.amazonaws.com' along with '/login, /gconnect, /categories' appended to redirect URIs and the IP address and alias to Authrozied Javascript origins
 * `sudo tail -50 /var/log/apache2/error.log`
-* Error with client_secrets.json in line 78, `sudo nano __init__.py` and add full path at line 78: `/var/www/catalog/catalog/client_secrest.json`
-*
+* Error with client_secrets.json in line 78, `sudo nano __init__.py` and add full path at line 78: `/var/www/catalog/catalog/client_secrets.json`
+* `sudo service apache2 reload`
+* IT WORKS!
