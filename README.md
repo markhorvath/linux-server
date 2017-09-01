@@ -2,6 +2,7 @@
 
 ## To the Reviewer:
 * Public IP address: 54.83.148.219
+* SSH Port: 2200
 * URL: http://ec2-54-83-148-219.compute-1.amazonaws.com/
 
 # Steps Taken (In Order)
@@ -57,7 +58,7 @@
 * `sudo dpkg-reconfigure tzdata`
 * Enter, Enter, (aka select 'none of the above' and 'UTC')
 
-###1 Install and configure Apache to serve a Python mod_wsgi application
+### Install and configure Apache to serve a Python mod_wsgi application
 * Some of this was from this Digital Ocean [article](https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps#setup)
 * `sudo apt-get install apache2`
 * `sudo apt-get install libapache2-mod-wsgi python-dev`
@@ -151,7 +152,7 @@ execfile(activate_this, dict(__file__=activate_this))` to top of .wsgi file
 * Run `sudo tail -50 /var/log/apache2/error.log` to view up to 50 error logs back in /var/log/
 * Changed line 221 `categories = session.query(Category).group_by(Category.name).all()` in __init__.py to `categories = session.query(Category).all()`
 * Site is now live at IP address
-*
+
 ### Set up Google OAuth
 * Go to google developers Song Catalog Project
 * Click 'Edit' button for 'OAuth 2.0 client IDs'
