@@ -152,6 +152,9 @@ execfile(activate_this, dict(__file__=activate_this))` to top of .wsgi file
 * Run `sudo tail -50 /var/log/apache2/error.log` to view up to 50 error logs back in /var/log/
 * Changed line 221 `categories = session.query(Category).group_by(Category.name).all()` in __init__.py to `categories = session.query(Category).all()`
 * Site is now live at IP address
+* ssh as grader, `sudo ufw deny 22` (forgot to deny this first time around)
+* ran `sudo apt-get update && sudo apt-get upgrade`
+* `/usr/lib/update-notifier/apt-check --human-readable` to ensure packages are up to date [link](https://askubuntu.com/questions/49958/how-to-find-the-number-of-packages-needing-update-from-the-command-line)
 
 ### Set up Google OAuth
 * Go to google developers Song Catalog Project
